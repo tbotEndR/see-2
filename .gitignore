@@ -1,4 +1,3 @@
-*.txt
-*.exe
-selgrad_pg2/ueb01/a6
-selgrad_pg2/ueb02/myecho
+*
+!*.*
+!*/
