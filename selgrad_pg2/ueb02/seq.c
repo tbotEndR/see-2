@@ -18,7 +18,7 @@ int main(int argc, char **argv)
     }
 
     if (start > end) return -1;
-    
+
     while (start <= end) 
     {
         printf("%d\n", start);
