@@ -14,10 +14,11 @@ void myStrcpy(char *destination, const char *source)
 }
 
 //  returns string length including null-byte
-int myStrlen(const char *source)
+int myStrlen(const char *str)
 {
+    if (str == NULL) return 0;
     int i = 0;
-    while(source[i]) i++;
+    while(str[i]) i++;
     return i+1;
 }
 

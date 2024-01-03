@@ -4,21 +4,22 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "myutils.h"
 
 typedef struct Entry{
-    char **tags;
     char *content;
+    char **tags;
+    int t;          //  until I figure out a better way to store tag array size for freeing
 } Entry;
 
 enum EFlag{add, query};
+char *g_filePath = "/home/ce_lab/.mytagdb";
 
 Entry *EntryCtor(char *tags, char *content);
 void EntryDtor(Entry *entry);
 void AddEntry(Entry *entry);
 void QueryDatabase(char **tags);
 enum EFlag ParseCommand(char *argument);
-char **TagListCtor(char *tags);
-void TagListDtor(char **query);
 
 int main(int argc, char **argv)
 {
@@ -26,7 +27,7 @@ int main(int argc, char **argv)
         FILE *pDatabase;
 
         if (argv[1]) flag = ParseCommand(argv[1]);
-        pDatabase = fopen("path", "r+");
+        pDatabase = fopen(g_filePath, "r+");
         if (pDatabase == NULL)
         {
             perror("Error opening database");
@@ -45,9 +46,7 @@ int main(int argc, char **argv)
             case query:
                 if (argc == 3)
                 {
-                    char **query = TagListCtor(argv[2]);
-                    QueryDatabase(query);
-                    TagListDtor(query);
+                    //QueryDatabase(query);
                     break;
                 }
                 
@@ -59,29 +58,45 @@ int main(int argc, char **argv)
 
 Entry *EntryCtor(char *tags, char *content)
 {
-
+    Entry *newEntry = (Entry*) malloc(sizeof(Entry));
+    newEntry->tags = myStrtok(tags, ',');
+    newEntry->t = charCounter(tags, ',')+1;      
+    newEntry->content = myStrcat(newEntry->content, content);
+    return newEntry;
 }
+
 void EntryDtor(Entry *entry)
 {
-
+    for (int i = 0; i < entry->t; i++)
+    {
+        free(entry->tags[i]);
+    }
+    free(entry->tags);
+    free(entry->content);
+    free(entry);
 }
+
 void AddEntry(Entry *entry)
 {
-
+    printf("Hello from inside the new entry!\n");
+    printf("%s: ", entry->content);
+    for(int i = 0; i < entry->t; i++)
+    {
+        printf("%s ", entry->tags[i]);
+    }
+    printf("\n");
 }
+
 void QueryDatabase(char **tags)
 {
 
 }
+
 enum EFlag ParseCommand(char *argument)
 {
-
-}
-char **TagListCtor(char *tags)
-{
-
-}
-void TagListDtor(char **query)
-{
-    
+    if (argument[0] == '-')
+    {
+        if (argument[1] == 'a') return add;
+        else if (argument[1] == 'q') return query;
+    }
 }

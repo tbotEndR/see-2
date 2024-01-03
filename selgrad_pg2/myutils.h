@@ -2,7 +2,7 @@
 #define myutils_h
 
 void myStrcpy(char *destination, const char *source);
-int myStrlen(const char *source);
+int myStrlen(const char *str);
 int charCounter(const char *str, char ch);
 char *myStrcat(const char *arg1, const char *arg2);
 char *myStrchr(char *str, char ch);
