@@ -1,8 +1,10 @@
 #ifndef myutils_h
 #define myutils_h
 
-void myStrcpy(char *destination, char *source);
-int myStrlen(char* source);
-char *myStrAppend(char *arg1, char *arg2);
+void myStrcpy(char *destination, const char *source);
+int myStrlen(const char* source);
+char *myStrcat(const char *arg1, const char *arg2);
+char *myStrchr(const char c, const char *source);
+char *myStrtok(char *str, const char token);
 
 #endif

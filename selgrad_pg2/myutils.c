@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 //  copies source string into destination buffer (no check for overflows)
-void myStrcpy(char *destination, char *source)
+void myStrcpy(char *destination, const char *source)
 {
     int i = 0;
     while (source[i])
@@ -15,7 +15,7 @@ void myStrcpy(char *destination, char *source)
 }
 
 //  returns string length including null-byte
-int myStrlen(char *source)
+int myStrlen(const char *source)
 {
     int i = 0;
     while(source[i]) i++;
@@ -23,7 +23,7 @@ int myStrlen(char *source)
 }
 
 //  appends arg2 to arg1
-char *myStrAppend(char *arg1, char *arg2)
+char *myStrcat(const char *arg1, const char *arg2)
 {
     int firstStrLen = myStrlen(arg1);
     int secondStrLen = myStrlen(arg2);
@@ -44,4 +44,10 @@ char *myStrAppend(char *arg1, char *arg2)
     newStr[i] = '\0';
 
     return newStr;    
+}
+
+//  returns pointer to first occurrence of c in source
+char *myStrchr(const char c, const char *source)
+{
+    char *cursor = source;
 }
