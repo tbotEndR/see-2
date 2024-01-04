@@ -2,24 +2,24 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//  copies source string into destination buffer (no check for overflows)
-void myStrcpy(char *destination, const char *source)
+//  copies string to new location and returns pointer
+char *myStrcpy(const char *str, size_t len)
 {
-    int i = 0;
-    while (source[i])
-    {
-        destination[i] = source[i];
-        i++;
-    }
+    char *newStr = (char*) malloc(len);
+    for (int i = 0; i < len; i++) newStr[i] = str[i];
+    return newStr;
 }
 
 //  returns string length including null-byte
 int myStrlen(const char *str)
 {
-    if (str == NULL) return 0;
-    int i = 0;
-    while(str[i]) i++;
-    return i+1;
+    if (str)
+    {
+        int i = 0;
+        while(str[i]) i++;
+        return i+1;
+    }
+    return 0;    
 }
 
 //  returns the number of occurrences of ch in str
@@ -72,7 +72,7 @@ char *myStrchr(char *str, char ch)
 }
 
 //  returns substring beginning at str[start] to str[end]
-char *myStrsplit(const char *str, char *start, char *end)
+char *myStrsplit(const char *start, const char *end)
 {
     if (!(start && end)) return NULL;
     int newStrLen = abs(end-start)+2;   //  +2 for char at str[end] and null byte
@@ -90,18 +90,18 @@ char *myStrsplit(const char *str, char *start, char *end)
 char **myStrtok(const char *str, char delim)
 {
     int len = myStrlen(str);
-    int words = charCounter(str, delim);
+    int words = charCounter(str, delim)+1;
     char **tokens = (char**) malloc(sizeof(char*) * words);
     char **cursor = tokens;
     char *start = str;
     char *end = NULL;
     while(end = myStrchr(start, delim))             //  becomes false when myStrchr reaches null byte
     {
-        *cursor = myStrsplit(str, start, end-1);    //  end-1 to not copy delimiter
+        *cursor = myStrsplit(start, end-1);    //  end-1 to not copy delimiter
         start = end+1;                              //  move start position after last delimiter
         cursor++;
     }                                               
-    *cursor = myStrsplit(str, start, &str[len-1]);  //  copy final remaining token after last delimiter
+    *cursor = myStrsplit(start, &str[len-1]);  //  copy final remaining token after last delimiter
 
     return tokens;    
 }

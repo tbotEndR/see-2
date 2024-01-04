@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include "myutils.h"
 
 typedef struct Entry{
@@ -61,7 +62,7 @@ Entry *EntryCtor(char *tags, char *content)
     Entry *newEntry = (Entry*) malloc(sizeof(Entry));
     newEntry->tags = myStrtok(tags, ',');
     newEntry->t = charCounter(tags, ',')+1;      
-    newEntry->content = myStrcat(newEntry->content, content);
+    newEntry->content = myStrcpy(content, myStrlen(content));
     return newEntry;
 }
 
