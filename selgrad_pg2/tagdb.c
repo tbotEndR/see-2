@@ -18,9 +18,10 @@ char *g_filePath = "/home/ce_lab/.mytagdb";
 
 Entry *EntryCtor(char *tags, char *content);
 void EntryDtor(Entry *entry);
-void AddEntry(Entry *entry);
+void AddEntry(Entry *entry, FILE *db);
 void QueryDatabase(char **tags);
 enum EFlag ParseCommand(char *argument);
+char *EntryFormatter(Entry *entry);
 
 int main(int argc, char **argv)
 {
@@ -40,7 +41,7 @@ int main(int argc, char **argv)
                 if (argc == 4)
                 {
                     Entry *newEntry = EntryCtor(argv[2], argv[3]);
-                    AddEntry(newEntry);
+                    AddEntry(newEntry, pDatabase);
                     EntryDtor(newEntry);
                     break;
                 }
@@ -60,9 +61,9 @@ int main(int argc, char **argv)
 Entry *EntryCtor(char *tags, char *content)
 {
     Entry *newEntry = (Entry*) malloc(sizeof(Entry));
-    newEntry->tags = myStrtok(tags, ',');
-    newEntry->t = charCounter(tags, ',')+1;      
-    newEntry->content = myStrcpy(content, myStrlen(content));
+    newEntry->tags = MyStrtok(tags, ',');
+    newEntry->t = CharCounter(tags, ',')+1;      
+    newEntry->content = MyStrcpy(content, MyStrlen(content));
     return newEntry;
 }
 
@@ -77,15 +78,11 @@ void EntryDtor(Entry *entry)
     free(entry);
 }
 
-void AddEntry(Entry *entry)
+void AddEntry(Entry *entry, FILE *db)
 {
-    printf("Hello from inside the new entry!\n");
-    printf("%s: ", entry->content);
-    for(int i = 0; i < entry->t; i++)
-    {
-        printf("%s ", entry->tags[i]);
-    }
-    printf("\n");
+    char *entryStr = EntryFormatter(entry);
+    fwrite(entryStr, sizeof(entryStr[0]), MyStrlen(entryStr), db);
+    free(entryStr);
 }
 
 void QueryDatabase(char **tags)
@@ -100,4 +97,23 @@ enum EFlag ParseCommand(char *argument)
         if (argument[1] == 'a') return add;
         else if (argument[1] == 'q') return query;
     }
+}
+
+//  returns entry contents formatted for writing to database
+char *EntryFormatter(Entry *entry)
+{
+    char *contentFormat = MyStrcpy("Content:", MyStrlen("Content:"));
+    contentFormat = MyStrcatfree(contentFormat, entry->content);
+    contentFormat = MyStrcatfree(contentFormat, ",");
+
+    char *tagFormat = MyStrcpy("{tags:[", MyStrlen("{tags:["));
+    for (int i = 0; i < entry->t; i++)
+    {
+        tagFormat = MyStrcatfree(tagFormat, entry->tags[i]);
+        tagFormat = MyStrcatfree(tagFormat, ",");
+    }
+    tagFormat = MyStrcatfree(tagFormat, "]}");
+    contentFormat = MyStrcatfree(contentFormat, tagFormat);
+    free(tagFormat);
+    return contentFormat;
 }
